@@ -24,7 +24,7 @@ ghost_pos = {
 }
 
 for i in range(15):
-    obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
+    obj = Apple(apple_id, apple_size)
     apple_id += 1
 
 while running:
@@ -58,7 +58,7 @@ while running:
             del obj
 
     if Apple.count() < 15:
-        obj = Apple(apple_id, apple_size,  screen.get_width(), screen.get_height())
+        obj = Apple(apple_id, apple_size)
         apple_id += 1
 
     pygame.display.flip()
