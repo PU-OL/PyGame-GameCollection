@@ -1,5 +1,6 @@
 import pygame
 from apples_class import Apple
+from pacman_class import PacMan
 
 pygame.init()
 pygame.display.set_caption("Pac Man Apples: 0")
@@ -12,9 +13,7 @@ apple_counter = 0
 apple_size = 10
 apple_delete = None
 
-pac_pos = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
-pac_picture = pygame.image.load("pictures/PacMan_open.png")
-pac_picture = pygame.transform.scale(pac_picture, (40, 40))
+
 
 ghost_pos = {
     "red": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
@@ -24,8 +23,10 @@ ghost_pos = {
 }
 
 for i in range(15):
-    obj = Apple(apple_id, apple_size)
+    obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
     apple_id += 1
+
+pacman = PacMan(0,20, 500, 400, screen.get_width(), screen.get_height())
 
 while running:
     for event in pygame.event.get():
@@ -36,29 +37,29 @@ while running:
     if keys[pygame.K_ESCAPE]:
         print("Change to Menu")
     if keys[pygame.K_w]:
-        pac_pos.y -= 2
-    if keys[pygame.K_s]:
-        pac_pos.y += 2
+        PacMan.move(pacman, 0)
     if keys[pygame.K_a]:
-        pac_pos.x -= 2
+        PacMan.move(pacman, 1)
+    if keys[pygame.K_s]:
+        PacMan.move(pacman, 2)
     if keys[pygame.K_d]:
-        pac_pos.x += 2
+        PacMan.move(pacman, 3)
     if keys[pygame.K_BACKSPACE]:
-        pac_pos = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
+        pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
     screen.fill("black")
     pygame.display.set_caption("Pac Man Apples: " + str(apple_counter))
-    screen.blit(pac_picture, pac_pos)
+    pacman.draw(screen)
     for i in Apple.iterate_all_instances():
         i.draw(screen)
-        if i.ishit(pac_pos):
+        if i.ishit(pacman.cords_center):
             apple_counter += 1
             obj = i.objects()
             i.delete()
             del obj
 
     if Apple.count() < 15:
-        obj = Apple(apple_id, apple_size)
+        obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
         apple_id += 1
 
     pygame.display.flip()

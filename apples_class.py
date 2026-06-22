@@ -1,13 +1,14 @@
 import random
 import pygame
-from PacMan import screen
 
 class Apple:
     _instances = []
     hitboxsize = 20
 
-    def __init__(self, id, size):
+    def __init__(self, id, size, screenwidth, screenheight):
         self.id = id
+        self.screenwidth = screenwidth
+        self.screenheight = screenheight
         self.size = size
         self.cords_center = pygame.Vector2()
         self.cords_upper_left = pygame.Vector2()
@@ -23,15 +24,15 @@ class Apple:
         self._instances.remove(self)
         print("Instance deleted. id: " + str(self.id))
 
-    def draw(self):
+    def draw(self, screen):
         pygame.draw.circle(screen, "red", self.cords_center, self.size)
 
     def generate(self):
         used = False
         while not used:
             hit = False
-            self.cords_center.x = random.randint(0, screen.screenwidth)
-            self.cords_center.y = random.randint(0, screen.screenheight)
+            self.cords_center.x = random.randint(0, self.screenwidth)
+            self.cords_center.y = random.randint(0, self.screenheight)
             self.hitbox()
             for i in Apple.iterate_all_instances():
                 if self.ishit(i.cords_center) and self.border_reached():
@@ -55,10 +56,10 @@ class Apple:
 
     def border_reached(self):
         return (
-                self.cords_upper_left.x <= 20 or
-                self.cords_lower_right.x >= screen.screenwidth - 20 or
-                self.cords_upper_left.y <= 20 or
-                self.cords_lower_right.y >= screen.screenheight - 20
+                self.cords_upper_left.x <= 40 or
+                self.cords_lower_right.x >= self.screenwidth - 40 or
+                self.cords_upper_left.y <= 40 or
+                self.cords_lower_right.y >= self.screenheight - 40
         )
 
     @classmethod
