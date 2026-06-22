@@ -1,2 +1,2 @@
-# TowerDefense
-Bloons Tower Defense with pygame
+# PacMan
+PacMan as a pygame
