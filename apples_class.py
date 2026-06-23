@@ -25,7 +25,7 @@ class Apple:
 
     def draw(self, screen):
         pygame.draw.circle(screen, "red", self.cords_center, self.size)
-        pygame.draw.circle(screen, "blue", self.cords_center, 3)
+       # pygame.draw.circle(screen, "blue", self.cords_center, 3)
 
     def generate(self, walls, score_cords_upper_left, score_cords_lower_right, room_cors_upper_left, room_cors_lower_right):
         used = False

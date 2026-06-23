@@ -61,13 +61,13 @@ while running:
     if keys[pygame.K_ESCAPE]:
         print("Change to Menu")
     if keys[pygame.K_w]:
-        PacMan.move(pacman, 0)
+        PacMan.move(pacman, 0, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
     if keys[pygame.K_a]:
-        PacMan.move(pacman, 1)
+        PacMan.move(pacman, 1, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
     if keys[pygame.K_s]:
-        PacMan.move(pacman, 2)
+        PacMan.move(pacman, 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
     if keys[pygame.K_d]:
-        PacMan.move(pacman, 3)
+        PacMan.move(pacman, 3, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
     if keys[pygame.K_BACKSPACE]:
         pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
@@ -76,6 +76,7 @@ while running:
     pacman.draw(screen)
     #show_border(screen.get_width(), screen.get_height())
 
+    #print(Apple.count())
     for i in Apple.iterate_all_instances():
         i.draw(screen)
         if i.ishit(pacman.cords_center):

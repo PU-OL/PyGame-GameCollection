@@ -47,14 +47,33 @@ class PacMan:
                 cords_lower_right.y >= self.screenheight -10
         )
 
+    def check_track(self,new_cords, walls, up_left_score, down_right_score):
+        cx = new_cords.x
+        cy = new_cords.y
+        r = self.hitbox
+
+        if up_left_score.x <= cx <= down_right_score.x and \
+                up_left_score.y <= cy <= down_right_score.y:
+            return True
+
+        for wall in walls:
+            (x1, y1), (x2, y2) = wall
+            if y1 == y2:
+                if abs(cy - y1) <= r and x1 <= cx <= x2:
+                    return True
+            if x1 == x2:
+                if abs(cx - x1) <= r and y1 <= cy <= y2:
+                    return True
+        return False
+
     def pac_hitbox(self):
         self.cords_upper_left.x = self.cords_center.x - self.hitbox /2
         self.cords_upper_left.y = self.cords_center.y - self.hitbox /2
         self.cords_lower_right.x = self.cords_center.x + self.hitbox /2
         self.cords_lower_right.y = self.cords_center.y + self.hitbox /2
 
-    def move(self, direction):
-        speed = 3
+    def move(self, direction, walls, up_left_score, down_right_score):
+        speed = 5
         new_cords = pygame.Vector2(self.cords_center.x, self.cords_center.y)
         if direction == 0: #equals w
             new_cords.y = self.cords_center.y - speed
@@ -68,4 +87,8 @@ class PacMan:
                     if direction == 3: #equals d
                         new_cords.x = self.cords_center.x + speed
         if not self.try_new_collision(new_cords):
-            self.cords_center = new_cords
+            #print("No collision")
+            if not self.check_track(new_cords,walls, up_left_score, down_right_score):
+                self.cords_center = new_cords
+            #else:
+                #print("Track collision")
