@@ -46,7 +46,7 @@ class levelgeneration():
         dirs = []
         for d, (dx, dy) in enumerate([(0, -1), (1,0), (0,1), (-1,0)]):
             n = self.cell(c.x + dx, c.y + dy)
-            if n and not n.filled:
+            if n and not n.filled and not n.fixed:
                 dirs.append((d, n))
         return dirs
 
@@ -62,7 +62,7 @@ class levelgeneration():
             random.shuffle(neighbors)
 
             for d, n in neighbors:
-                if not n.filled and random.random() < 0.6:
+                if not n.filled and random.random() < 0.6 and not n.fixed:
                     self.connect(c, d)
                     n.filled = True
                     n.group = group_id
@@ -73,13 +73,20 @@ class levelgeneration():
         while True:
             tries += 1
             self.reset()
+            self.room_box(4, 2)
+            score_cord = self.score_box(3, 1)
             self.build_map()
 
             self.loading_screen(screen, tries)
 
             if not self.is_fully_connected(self.grid[0][0]):
+                if tries > 1000:
+                    break
                 continue
             break
+        return score_cord
+
+
         print("Needed " + str(tries) + " tries to generate labyrinth")
 
 
@@ -90,7 +97,7 @@ class levelgeneration():
             for y in range(self.rows):
                 c = self.grid[x][y]
 
-                if not c.filled:
+                if not c.filled and not c.fixed:
                     self.grow(c, group)
                     group += 1
 
@@ -134,6 +141,35 @@ class levelgeneration():
                     return False
         return True
 
+    def score_box(self, width, height):
+        x0 = (self.cols - width) //2
+        y0 = 0
 
+        self.fill_rect(x0, y0, width, height)
+        return x0
 
+    def room_box(self, width, height):
+        x0 = (self.cols - width) //2
+        y0 = (self.rows - height) //2
 
+        self.fill_rect(x0, y0, width, height)
+
+        mid_x = x0 + width // 2
+        mid_y = y0
+        c = self.grid[mid_x][mid_y]
+        c.conn[UP] = True
+        n = self.cell(mid_x, mid_y - 1)
+        if n:
+            n.conn[DOWN] = True
+
+    def fill_rect(self, x0, y0, w, h, fixed = True):
+            for x in range(x0, x0 + w):
+                for y in range(y0, y0 + h):
+                    c = self.grid[x][y]
+                    c.filled = True
+                    c.fixed = True
+
+                    c.conn[UP] = True
+                    c.conn[RIGHT] = True
+                    c.conn[DOWN] = True
+                    c.conn[LEFT] = True

@@ -4,5 +4,6 @@ class cell():
         self.y = y_cord
 
         self.filled = False
+        self.fixed = False
         self.conn = [False, False, False, False]  # [Up, Right, Down, Left]
         self.group = -1

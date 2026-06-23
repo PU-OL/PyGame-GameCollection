@@ -21,7 +21,6 @@ apple_max = 0
 pygame.font.init()
 
 text_loading = "Labyrinth gets generated. Please wait..."
-text_apples = "Points: " + str(apple_counter)
 font_large = pygame.font.SysFont("Arial", 36)
 font_normal = pygame.font.SysFont("Arial", 20)
 
@@ -41,13 +40,17 @@ ghost_pos = {
 collums = screen.get_width()/40
 rows = screen.get_height()/40
 
+point_pos = pygame.Vector2(20,10)
+
 labyrinth = levelgeneration(int(collums), int(rows))
-labyrinth.generate(screen)
+point_pos.x = labyrinth.generate(screen)
+point_pos.x = point_pos.x * 43
+print(point_pos.x + point_pos.y)
 
 apple_max = int((screen.get_width()/150)* (screen.get_height()/150))
 print("Max apples: " + str(apple_max))
 
-pacman = PacMan(0,30, 500, 400, screen.get_width(), screen.get_height())
+pacman = PacMan(0,30, screen.get_width()/2, screen.get_height()/2, screen.get_width(), screen.get_height())
 
 while running:
     for event in pygame.event.get():
@@ -69,7 +72,6 @@ while running:
         pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
     screen.fill("black")
-    pygame.display.set_caption("Pac Man Apples: " + str(apple_counter))
     labyrinth.draw(screen, 40, 5)
     pacman.draw(screen)
     #show_border(screen.get_width(), screen.get_height())
@@ -81,6 +83,10 @@ while running:
             obj = i.objects()
             i.delete()
             del obj
+
+    text_apples = "Points: " + str(apple_counter)
+    text_source = font_normal.render(text_apples, True, (0, 255, 0))
+    screen.blit(text_source, point_pos)
 
     if Apple.count() < apple_max:
         obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
