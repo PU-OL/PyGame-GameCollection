@@ -25,10 +25,10 @@ class PacMan:
 
     def collision(self):
         return (
-                self.cords_upper_left.x >= 10 or
-                self.cords_lower_right.x <= self.screenwidth - 10 or
-                self.cords_upper_left.y >= 10 or
-                self.cords_lower_right.y <= self.screenheight - 10
+                self.cords_upper_left.x >= 0 or
+                self.cords_lower_right.x <= self.screenwidth or
+                self.cords_upper_left.y >= 0 or
+                self.cords_lower_right.y <= self.screenheight
         )
 
     def try_new_collision(self, new_cords):
@@ -41,10 +41,10 @@ class PacMan:
         cords_lower_right.y = new_cords.y + self.hitbox /2
 
         return (
-                cords_upper_left.x <= 20 or
-                cords_lower_right.x >= self.screenwidth - 20 or
-                cords_upper_left.y <= 20 or
-                cords_lower_right.y >= self.screenheight - 20
+                cords_upper_left.x <= 10 or
+                cords_lower_right.x >= self.screenwidth -10 or
+                cords_upper_left.y <= 10 or
+                cords_lower_right.y >= self.screenheight -10
         )
 
     def pac_hitbox(self):
@@ -54,17 +54,18 @@ class PacMan:
         self.cords_lower_right.y = self.cords_center.y + self.hitbox /2
 
     def move(self, direction):
+        speed = 3
         new_cords = pygame.Vector2(self.cords_center.x, self.cords_center.y)
         if direction == 0: #equals w
-            new_cords.y = self.cords_center.y - 2
+            new_cords.y = self.cords_center.y - speed
         else:
             if direction == 1: #equals a
-                new_cords.x = self.cords_center.x - 2
+                new_cords.x = self.cords_center.x - speed
             else:
                 if direction == 2: #equals s
-                    new_cords.y = self.cords_center.y + 2
+                    new_cords.y = self.cords_center.y + speed
                 else:
                     if direction == 3: #equals d
-                        new_cords.x = self.cords_center.x + 2
+                        new_cords.x = self.cords_center.x + speed
         if not self.try_new_collision(new_cords):
             self.cords_center = new_cords
