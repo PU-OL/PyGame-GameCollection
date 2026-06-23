@@ -89,7 +89,7 @@ while running:
     screen.blit(text_source, point_pos)
 
     if Apple.count() < apple_max:
-        obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
+        obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down, labyrinth.room_box_cords_left_up, labyrinth.room_box_cords_right_down)
         apple_id += 1
 
     pygame.display.flip()

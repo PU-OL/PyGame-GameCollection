@@ -20,8 +20,8 @@ class PacMan:
     def draw(self, screen):
         self.cord_picture = pygame.Vector2(self.cords_center.x - self.size / 2, self.cords_center.y - self.size / 2)
         screen.blit(self.pac_picture, self.cord_picture)
-        pygame.draw.circle(screen, "blue", self.cords_center, 5)
-        pygame.draw.circle(screen, "green", self.cord_picture, 5)
+        #pygame.draw.circle(screen, "blue", self.cords_center, 5)
+        #pygame.draw.circle(screen, "green", self.cord_picture, 5)
 
     def collision(self):
         return (
