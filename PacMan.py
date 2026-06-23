@@ -42,7 +42,7 @@ rows = screen.get_height()/40
 
 point_pos = pygame.Vector2(20,10)
 
-labyrinth = levelgeneration(int(collums), int(rows))
+labyrinth = levelgeneration(int(collums), int(rows), 40)
 point_pos.x = labyrinth.generate(screen)
 point_pos.x = point_pos.x * 43
 print(point_pos.x + point_pos.y)
@@ -50,7 +50,7 @@ print(point_pos.x + point_pos.y)
 apple_max = int((screen.get_width()/150)* (screen.get_height()/150))
 print("Max apples: " + str(apple_max))
 
-pacman = PacMan(0,30, screen.get_width()/2, screen.get_height()/2, screen.get_width(), screen.get_height())
+pacman = PacMan(0,30, screen.get_width()/2, screen.get_height()/2, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
 
 while running:
     for event in pygame.event.get():
@@ -60,19 +60,20 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_ESCAPE]:
         print("Change to Menu")
+        running = False
     if keys[pygame.K_w]:
-        PacMan.move(pacman, 0, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+        PacMan.move(pacman, 0)
     if keys[pygame.K_a]:
-        PacMan.move(pacman, 1, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+        PacMan.move(pacman, 1)
     if keys[pygame.K_s]:
-        PacMan.move(pacman, 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+        PacMan.move(pacman, 2)
     if keys[pygame.K_d]:
-        PacMan.move(pacman, 3, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+        PacMan.move(pacman, 3)
     if keys[pygame.K_BACKSPACE]:
         pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
     screen.fill("black")
-    labyrinth.draw(screen, 40, 5)
+    labyrinth.draw(screen, 5)
     pacman.draw(screen)
     #show_border(screen.get_width(), screen.get_height())
 

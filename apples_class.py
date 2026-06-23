@@ -64,7 +64,7 @@ class Apple:
     def check_track(self, walls, up_left_score, down_right_score, up_left_room,down_right_room):
         cx = self.cords_center.x
         cy = self.cords_center.y
-        r = self.size
+        r = self.size + self.size*3
 
         if up_left_score.x <= cx <= down_right_score.x and \
                 up_left_score.y <= cy <= down_right_score.y:

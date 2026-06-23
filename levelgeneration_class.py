@@ -6,8 +6,9 @@ from cell_class import cell
 UP, RIGHT, DOWN, LEFT = 0,1,2,3
 
 class levelgeneration():
-    def __init__(self, cols, rows):
+    def __init__(self, cols, rows, size):
         self.cols = cols
+        self.size = size
         self.rows = rows
         self.walls = []
         self.score_box_cords_right_down = pygame.Vector2()
@@ -94,6 +95,7 @@ class levelgeneration():
                 continue
             break
         print("Needed " + str(tries) + " tries to generate labyrinth")
+        self.build_walls(self.size)
         return score_cord
 
     def build_map(self):
@@ -107,7 +109,26 @@ class levelgeneration():
                     self.grow(c, group)
                     group += 1
 
-    def draw(self, screen, size, thickness):
+    def draw(self, screen, thickness):
+        for x in range(self.cols):
+            for y in range(self.rows):
+                c = self.grid[x][y]
+
+                px, py = x * self.size, y * self.size
+
+                if c.filled:
+                    pygame.draw.rect(screen, "black", (px, py, self.size, self.size))
+
+                if not c.conn[UP]:
+                    pygame.draw.line(screen, "blue", (px, py), (px + self.size, py), thickness)
+                if not c.conn[RIGHT]:
+                    pygame.draw.line(screen, "blue", (px + self.size, py), (px + self.size, py + self.size), thickness)
+                if not c.conn[DOWN]:
+                    pygame.draw.line(screen, "blue", (px, py + self.size), (px + self.size, py + self.size), thickness)
+                if not c.conn[LEFT]:
+                    pygame.draw.line(screen, "blue", (px, py), (px, py + self.size), thickness)
+
+    def build_walls(self, size):
         for x in range(self.cols):
             for y in range(self.rows):
                 c = self.grid[x][y]
@@ -115,20 +136,16 @@ class levelgeneration():
                 px, py = x * size, y * size
 
                 if c.filled:
-                    pygame.draw.rect(screen, "black", (px, py, size, size))
+                    print("Filled")
 
                 if not c.conn[UP]:
                     self.walls.append(((px, py), (px + size, py)))
-                    pygame.draw.line(screen, "blue", (px, py), (px + size, py), thickness)
                 if not c.conn[RIGHT]:
-                    self.walls.append(((px + size, py), (px + size, py)))
-                    pygame.draw.line(screen, "blue", (px + size, py), (px + size, py + size), thickness)
+                    self.walls.append(((px + size, py), (px + size, py + size)))
                 if not c.conn[DOWN]:
                     self.walls.append(((px, py + size), (px + size, py + size)))
-                    pygame.draw.line(screen, "blue", (px, py + size), (px + size, py + size), thickness)
                 if not c.conn[LEFT]:
                     self.walls.append(((px, py), (px, py + size)))
-                    pygame.draw.line(screen, "blue", (px, py), (px, py + size), thickness)
 
     def is_fully_connected(self):
         start = None
@@ -181,8 +198,8 @@ class levelgeneration():
 
         self.score_box_cords_left_up.y = y0
         self.score_box_cords_left_up.x = x0
-        self.score_box_cords_right_down.y = y0 + height //2
-        self.score_box_cords_right_down.x = x0 + width //2
+        self.score_box_cords_right_down.y = y0 + height
+        self.score_box_cords_right_down.x = x0 + width
 
         self.fill_rect(x0, y0, width, height)
         return x0
@@ -193,8 +210,8 @@ class levelgeneration():
 
         self.room_box_cords_left_up.y = y0
         self.room_box_cords_left_up.x = x0
-        self.room_box_cords_right_down.y = y0 + height //2
-        self.room_box_cords_right_down.x = x0 + width //2
+        self.room_box_cords_right_down.y = y0 + height
+        self.room_box_cords_right_down.x = x0 + width
 
         self.fill_rect(x0, y0, width, height)
 
