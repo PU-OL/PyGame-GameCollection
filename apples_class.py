@@ -3,7 +3,6 @@ import pygame
 
 class Apple:
     _instances = []
-    hitboxsize = 20
 
     def __init__(self, id, size, screenwidth, screenheight):
         self.id = id
@@ -22,10 +21,11 @@ class Apple:
 
     def delete(self):
         self._instances.remove(self)
-        print("Instance deleted. id: " + str(self.id))
+        #print("Instance deleted. id: " + str(self.id))
 
     def draw(self, screen):
         pygame.draw.circle(screen, "red", self.cords_center, self.size)
+        pygame.draw.circle(screen, "blue", self.cords_center, 3)
 
     def generate(self):
         used = False
@@ -34,18 +34,22 @@ class Apple:
             self.cords_center.x = random.randint(0, self.screenwidth)
             self.cords_center.y = random.randint(0, self.screenheight)
             self.hitbox()
-            for i in Apple.iterate_all_instances():
-                if self.ishit(i.cords_center) and self.border_reached():
-                    hit = True
-                    #print("Hit. Generate new cords: ")
+            if not self.border_reached():
+                hit = True
+            else:
+                for i in Apple.iterate_all_instances():
+                    if self.ishit(i.cords_center):
+                        hit = True
+                        #print("Hit. Generate new cords: ")
             if not hit:
                     used = True
 
     def hitbox(self):
-        self.cords_upper_left.x = self.cords_center.x - self.hitboxsize /2
-        self.cords_upper_left.y = self.cords_center.y - self.hitboxsize /2
-        self.cords_lower_right.x = self.cords_center.x + self.hitboxsize /2
-        self.cords_lower_right.y = self.cords_center.y + self.hitboxsize /2
+        hitboxsize = self.size + self.size*2.5
+        self.cords_upper_left.x = self.cords_center.x - hitboxsize /2
+        self.cords_upper_left.y = self.cords_center.y - hitboxsize /2
+        self.cords_lower_right.x = self.cords_center.x + hitboxsize /2
+        self.cords_lower_right.y = self.cords_center.y + hitboxsize /2
 
     def ishit(self, collision_position):
         return (
@@ -56,10 +60,10 @@ class Apple:
 
     def border_reached(self):
         return (
-                self.cords_upper_left.x <= 40 or
-                self.cords_lower_right.x >= self.screenwidth - 40 or
-                self.cords_upper_left.y <= 40 or
-                self.cords_lower_right.y >= self.screenheight - 40
+                self.cords_upper_left.x >= 10 and
+                self.cords_lower_right.x <= self.screenwidth - 10 and
+                self.cords_upper_left.y >= 10 and
+                self.cords_lower_right.y <= self.screenheight - 10
         )
 
     @classmethod

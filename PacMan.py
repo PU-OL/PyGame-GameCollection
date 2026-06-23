@@ -1,4 +1,6 @@
 import pygame
+from pygame.examples import playmus
+
 from apples_class import Apple
 from pacman_class import PacMan
 
@@ -13,7 +15,11 @@ apple_counter = 0
 apple_size = 10
 apple_delete = None
 
-
+def show_border(screenwidth, screenheight):
+    pygame.draw.line(screen, "blue", (10, 10), (screenwidth -10, 10), 5)
+    pygame.draw.line(screen, "blue", (10, 10), (10, screenheight-10), 5)
+    pygame.draw.line(screen, "blue", (10, screenheight-10), (screenwidth-10, screenheight-10), 5)
+    pygame.draw.line(screen, "blue", (screenwidth-10, 10), (screenwidth-10, screenheight-10), 5)
 
 ghost_pos = {
     "red": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
@@ -26,7 +32,7 @@ for i in range(15):
     obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height())
     apple_id += 1
 
-pacman = PacMan(0,20, 500, 400, screen.get_width(), screen.get_height())
+pacman = PacMan(0,30, 500, 400, screen.get_width(), screen.get_height())
 
 while running:
     for event in pygame.event.get():
@@ -50,6 +56,7 @@ while running:
     screen.fill("black")
     pygame.display.set_caption("Pac Man Apples: " + str(apple_counter))
     pacman.draw(screen)
+    show_border(screen.get_width(), screen.get_height())
     for i in Apple.iterate_all_instances():
         i.draw(screen)
         if i.ishit(pacman.cords_center):

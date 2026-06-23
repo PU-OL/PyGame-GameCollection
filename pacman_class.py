@@ -1,7 +1,7 @@
 import pygame
 
 class PacMan:
-    hitbox = 20
+    hitbox = 10
 
     def __init__(self, id, size, x_cord, y_cord, screenwidth, screenheight):
         self.id = id
@@ -18,17 +18,17 @@ class PacMan:
 
 
     def draw(self, screen):
-        self.cord_picture = pygame.Vector2(self.cords_center.x + self.size / 2, self.cords_center.y + self.size / 2)
+        self.cord_picture = pygame.Vector2(self.cords_center.x - self.size / 2, self.cords_center.y - self.size / 2)
         screen.blit(self.pac_picture, self.cord_picture)
         pygame.draw.circle(screen, "blue", self.cords_center, 5)
         pygame.draw.circle(screen, "green", self.cord_picture, 5)
 
     def collision(self):
         return (
-                self.cords_upper_left.x <= 20 or
-                self.cords_lower_right.x >= self.screenwidth - 20 or
-                self.cords_upper_left.y <= 20 or
-                self.cords_lower_right.y >= self.screenheight - 20
+                self.cords_upper_left.x >= 10 or
+                self.cords_lower_right.x <= self.screenwidth - 10 or
+                self.cords_upper_left.y >= 10 or
+                self.cords_lower_right.y <= self.screenheight - 10
         )
 
     def try_new_collision(self, new_cords):
