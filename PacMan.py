@@ -1,6 +1,7 @@
 import pygame
 
 from apples_class import Apple
+from ghosts_class import Ghosts
 from levelgeneration_class import levelgeneration
 from pacman_class import PacMan
 
@@ -31,9 +32,9 @@ def show_border(screenwidth, screenheight):
     pygame.draw.line(screen, "pink", (screenwidth-10, 10), (screenwidth-10, screenheight-10), 5)
 
 ghost_pos = {
-    "red": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
-    "pink": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
-    "blue": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
+    "red": pygame.Vector2(screen.get_width()/2+11, screen.get_height()/2),
+    "pink": pygame.Vector2(screen.get_width()/2+22, screen.get_height()/2),
+    "blue": pygame.Vector2(screen.get_width()/2+33, screen.get_height()/2),
     "orange": pygame.Vector2(screen.get_width()/2, screen.get_height()/2),
 }
 
@@ -51,6 +52,11 @@ apple_max = int((screen.get_width()/150)* (screen.get_height()/150))
 print("Max apples: " + str(apple_max))
 
 pacman = PacMan(0,30, screen.get_width()/2, screen.get_height()/2, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+ghost_red = Ghosts(30,20,  10, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+ghost_pink = Ghosts(30,20,  20, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+ghost_blue = Ghosts(30,20,  30, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+ghost_orange = Ghosts(30,20,  40, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+
 
 while running:
     for event in pygame.event.get():
@@ -61,21 +67,33 @@ while running:
     if keys[pygame.K_ESCAPE]:
         print("Change to Menu")
         running = False
-    if keys[pygame.K_w]:
+    if keys[pygame.K_w] or keys[pygame.K_UP]:
         PacMan.move(pacman, 0)
-    if keys[pygame.K_a]:
+    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
         PacMan.move(pacman, 1)
-    if keys[pygame.K_s]:
+    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
         PacMan.move(pacman, 2)
-    if keys[pygame.K_d]:
+    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
         PacMan.move(pacman, 3)
     if keys[pygame.K_BACKSPACE]:
         pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
+    ghost_red.move(labyrinth,40)
+    ghost_pink.move(labyrinth,40)
+    ghost_blue.move(labyrinth,40)
+    ghost_orange.move(labyrinth,40)
+
     screen.fill("black")
     labyrinth.draw(screen, 5)
     pacman.draw(screen)
+    ghost_red.draw(screen, apple_counter)
+    ghost_pink.draw(screen, apple_counter)
+    ghost_blue.draw(screen, apple_counter)
+    ghost_orange.draw(screen, apple_counter)
     #show_border(screen.get_width(), screen.get_height())
+
+    if apple_counter%100 == 0 and apple_counter > 99:
+        print("The Ghost come to catch you")
 
     #print(Apple.count())
     for i in Apple.iterate_all_instances():

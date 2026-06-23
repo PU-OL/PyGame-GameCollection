@@ -135,8 +135,8 @@ class levelgeneration():
 
                 px, py = x * size, y * size
 
-                if c.filled:
-                    print("Filled")
+                #if c.filled:
+                    #print("Filled")
 
                 if not c.conn[UP]:
                     self.walls.append(((px, py), (px + size, py)))
