@@ -1,4 +1,7 @@
+from operator import truediv
+
 import pygame
+import time
 
 from apples_class import Apple
 from ghosts_class import Ghosts
@@ -28,7 +31,8 @@ text_loading = "Labyrinth gets generated. Please wait..."
 text_start_game = "Press Return to start"
 text_quit_game = "Press + to quit"
 text_game_over = "Game Over"
-font_large = pygame.font.SysFont("Arial", 36)
+font_large = pygame.font.SysFont("Arial", 76, True)
+font_normal_bold = pygame.font.SysFont("Arial", 20, True)
 font_normal = pygame.font.SysFont("Arial", 20)
 
 def show_border(screenwidth, screenheight):
@@ -36,6 +40,25 @@ def show_border(screenwidth, screenheight):
     pygame.draw.line(screen, "pink", (10, 10), (10, screenheight-10), 5)
     pygame.draw.line(screen, "pink", (10, screenheight-10), (screenwidth-10, screenheight-10), 5)
     pygame.draw.line(screen, "pink", (screenwidth-10, 10), (screenwidth-10, screenheight-10), 5)
+
+def func_game_over():
+    screen.fill("black")
+
+    labyrinth.draw(screen, 5)
+    pacman.draw(screen)
+    for ghost in Ghosts.iterate_all_instances():
+        ghost.draw(screen, apple_counter)
+    for apple in Apple.iterate_all_instances():
+        apple.draw(screen)
+
+    text_game_over_source = font_large.render(text_game_over, True, (255, 0, 0))
+    screen.blit(text_game_over_source, (screen.get_width() / 2 - 200, screen.get_height() / 2 - 100))
+    text_game_over_apples = "Points: " + str(apple_counter)
+    text_game_over_apples = font_normal_bold.render(text_apples, True, (0, 255, 0))
+    screen.blit(text_game_over_apples, (screen.get_width() / 2 - 50, screen.get_height() / 2))
+
+    pygame.display.flip()
+    time.sleep(5)
 
 ghost_pos = {
     "red": pygame.Vector2(screen.get_width()/2+11, screen.get_height()/2),
@@ -53,8 +76,6 @@ labyrinth = None
 
 apple_max = int((screen.get_width()/150)* (screen.get_height()/150))
 print("Max apples: " + str(apple_max))
-
-
 
 while running:
     for event in pygame.event.get():
@@ -86,6 +107,7 @@ while running:
         if key[pygame.K_RETURN]:
             main_menu = False
             game = True
+            game_over = False
 
             labyrinth = levelgeneration(int(collums), int(rows), 40)
             point_pos.x = labyrinth.generate(screen)
@@ -109,8 +131,6 @@ while running:
         keys = pygame.key.get_pressed()
         if keys[pygame.K_ESCAPE]:
             print("Change to Menu")
-            game = False
-            main_menu = True
             game_over = True
         if keys[pygame.K_w] or keys[pygame.K_UP]:
             PacMan.move(pacman, 0)
@@ -120,8 +140,12 @@ while running:
             PacMan.move(pacman, 2)
         if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
             PacMan.move(pacman, 3)
-        if keys[pygame.K_BACKSPACE]:
-            pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
+
+        if game_over and game == True:
+            func_game_over()
+            main_menu = True
+            game = False
+            continue
 
         screen.fill("black")
         labyrinth.draw(screen, 5)
@@ -154,26 +178,7 @@ while running:
             if i.active:
                 if i.caught_pacman(pacman.cords_center):
                     print("GAME OVER")
-                    game = False
-                    main_menu = True
                     game_over = True
-
-                    screen.fill("black")
-
-                    text_source = font_large.render(text_game_over, True, (0, 255, 0))
-                    screen.blit(text_source, (screen.get_width() / 2 - 75, screen.get_height() / 2 - 36))
-                    text_apples = "Points: " + str(apple_counter)
-                    text_source = font_normal.render(text_apples, True, (0, 255, 0))
-                    screen.blit(text_source, (screen.get_width() / 2 - 50, screen.get_height() / 2 +30))
-
-                    labyrinth.draw(screen, 40)
-                    pacman.draw(screen)
-                    for j in Ghosts.iterate_all_instances():
-                        j.draw(screen, apple_counter)
-                    for j in Apple.iterate_all_instances():
-                        j.draw(screen)
-
-                    pygame.display.flip()
 
         pygame.display.flip()
         dt = clock.tick(60) / 1000.0
