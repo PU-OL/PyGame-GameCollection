@@ -83,7 +83,7 @@ class levelgeneration():
             self.room_box(4, 2)
             score_cord = self.score_box(3, 1)
             self.build_map()
-            self.add_loops(int(self.cols * self.rows * 0.05))
+            self.add_loops(int(self.cols * self.rows * 0.5))
 
             self.loading_screen(screen, tries)
 

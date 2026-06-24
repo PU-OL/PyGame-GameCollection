@@ -11,6 +11,9 @@ screen = pygame.display.set_mode((800, 600))
 clock = pygame.time.Clock()
 
 running = True
+main_menu = True
+game = False
+game_over = False
 generated = False
 dt = 0
 apple_id = 0
@@ -22,6 +25,9 @@ apple_max = 0
 pygame.font.init()
 
 text_loading = "Labyrinth gets generated. Please wait..."
+text_start_game = "Press Return to start"
+text_quit_game = "Press + to quit"
+text_game_over = "Game Over"
 font_large = pygame.font.SysFont("Arial", 36)
 font_normal = pygame.font.SysFont("Arial", 20)
 
@@ -43,19 +49,11 @@ rows = screen.get_height()/40
 
 point_pos = pygame.Vector2(20,10)
 
-labyrinth = levelgeneration(int(collums), int(rows), 40)
-point_pos.x = labyrinth.generate(screen)
-point_pos.x = point_pos.x * 43
-print(point_pos.x + point_pos.y)
+labyrinth = None
 
 apple_max = int((screen.get_width()/150)* (screen.get_height()/150))
 print("Max apples: " + str(apple_max))
 
-pacman = PacMan(0,30, screen.get_width()/2, screen.get_height()/2, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-ghost_red = Ghosts(30,20,  10, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-ghost_pink = Ghosts(30,20,  20, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-ghost_blue = Ghosts(30,20,  30, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-ghost_orange = Ghosts(30,20,  40, screen.get_width(), screen.get_height(), screen.get_width()/2, screen.get_height()/2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
 
 
 while running:
@@ -63,56 +61,121 @@ while running:
         if event.type == pygame.QUIT:
             running = False
 
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_ESCAPE]:
-        print("Change to Menu")
-        running = False
-    if keys[pygame.K_w] or keys[pygame.K_UP]:
-        PacMan.move(pacman, 0)
-    if keys[pygame.K_a] or keys[pygame.K_LEFT]:
-        PacMan.move(pacman, 1)
-    if keys[pygame.K_s] or keys[pygame.K_DOWN]:
-        PacMan.move(pacman, 2)
-    if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
-        PacMan.move(pacman, 3)
-    if keys[pygame.K_BACKSPACE]:
-        pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
+    if main_menu:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                main_menu = False
 
-    ghost_red.move(labyrinth,40)
-    ghost_pink.move(labyrinth,40)
-    ghost_blue.move(labyrinth,40)
-    ghost_orange.move(labyrinth,40)
+        if game_over:
+            generated = False
+            apple_counter = 0
+            del labyrinth
+            del pacman
+            for j in Ghosts.iterate_all_instances():
+                j.delete()
+                del j
+            for j in Apple.iterate_all_instances():
+                j.delete()
+                del j
+            game_over = False
 
-    screen.fill("black")
-    labyrinth.draw(screen, 5)
-    pacman.draw(screen)
-    ghost_red.draw(screen, apple_counter)
-    ghost_pink.draw(screen, apple_counter)
-    ghost_blue.draw(screen, apple_counter)
-    ghost_orange.draw(screen, apple_counter)
-    #show_border(screen.get_width(), screen.get_height())
+        key = pygame.key.get_pressed()
+        if key[pygame.K_PLUS]:
+            running = False
+            main_menu = False
+        if key[pygame.K_RETURN]:
+            main_menu = False
+            game = True
 
-    if apple_counter%100 == 0 and apple_counter > 99:
-        print("The Ghost come to catch you")
+            labyrinth = levelgeneration(int(collums), int(rows), 40)
+            point_pos.x = labyrinth.generate(screen)
+            point_pos.x = point_pos.x * 43
+            print(point_pos.x + point_pos.y)
 
-    #print(Apple.count())
-    for i in Apple.iterate_all_instances():
-        i.draw(screen)
-        if i.ishit(pacman.cords_center):
-            apple_counter += 1
-            obj = i.objects()
-            i.delete()
-            del obj
+            pacman = PacMan(0, 30, screen.get_width() / 2, screen.get_height() / 2, screen.get_width(),screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up,labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_Rot", 30, 20, 10, screen.get_width(), screen.get_height(), screen.get_width() / 2,  screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_lila", 30, 20, 20, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_blau", 30, 20, 30, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_Grün", 30, 20, 40, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
 
-    text_apples = "Points: " + str(apple_counter)
-    text_source = font_normal.render(text_apples, True, (0, 255, 0))
-    screen.blit(text_source, point_pos)
+        screen.fill("black")
+        text_source = font_normal.render(text_start_game, True, (0, 255, 0))
+        screen.blit(text_source, (screen.get_width()/2-75, screen.get_height()/2-36))
+        text_source = font_normal.render(text_quit_game, True, (0, 255, 0))
+        screen.blit(text_source, (screen.get_width()/2-50, screen.get_height()/2))
+        pygame.display.flip()
 
-    if Apple.count() < apple_max:
-        obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down, labyrinth.room_box_cords_left_up, labyrinth.room_box_cords_right_down)
-        apple_id += 1
+    if game:
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_ESCAPE]:
+            print("Change to Menu")
+            game = False
+            main_menu = True
+            game_over = True
+        if keys[pygame.K_w] or keys[pygame.K_UP]:
+            PacMan.move(pacman, 0)
+        if keys[pygame.K_a] or keys[pygame.K_LEFT]:
+            PacMan.move(pacman, 1)
+        if keys[pygame.K_s] or keys[pygame.K_DOWN]:
+            PacMan.move(pacman, 2)
+        if keys[pygame.K_d] or keys[pygame.K_RIGHT]:
+            PacMan.move(pacman, 3)
+        if keys[pygame.K_BACKSPACE]:
+            pacman.cords_center = pygame.Vector2(screen.get_width()/2, screen.get_height()/2)
 
-    pygame.display.flip()
-    dt = clock.tick(60) / 1000.0
+        screen.fill("black")
+        labyrinth.draw(screen, 5)
+        pacman.draw(screen)
+        #show_border(screen.get_width(), screen.get_height())
+
+        if apple_counter%100 == 0 and apple_counter > 99:
+            print("The Ghost come to catch you")
+
+        #print(Apple.count())
+        for i in Apple.iterate_all_instances():
+            i.draw(screen)
+            if i.ishit(pacman.cords_center):
+                apple_counter += 1
+                obj = i.objects()
+                i.delete()
+                del obj
+
+        text_apples = "Points: " + str(apple_counter)
+        text_source = font_normal.render(text_apples, True, (0, 255, 0))
+        screen.blit(text_source, point_pos)
+
+        if Apple.count() < apple_max:
+            obj = Apple(apple_id, apple_size, screen.get_width(), screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down, labyrinth.room_box_cords_left_up, labyrinth.room_box_cords_right_down)
+            apple_id += 1
+
+        for i in Ghosts.iterate_all_instances():
+            i.move(labyrinth, 40)
+            i.draw(screen, apple_counter)
+            if i.active:
+                if i.caught_pacman(pacman.cords_center):
+                    print("GAME OVER")
+                    game = False
+                    main_menu = True
+                    game_over = True
+
+                    screen.fill("black")
+
+                    text_source = font_large.render(text_game_over, True, (0, 255, 0))
+                    screen.blit(text_source, (screen.get_width() / 2 - 75, screen.get_height() / 2 - 36))
+                    text_apples = "Points: " + str(apple_counter)
+                    text_source = font_normal.render(text_apples, True, (0, 255, 0))
+                    screen.blit(text_source, (screen.get_width() / 2 - 50, screen.get_height() / 2 +30))
+
+                    labyrinth.draw(screen, 40)
+                    pacman.draw(screen)
+                    for j in Ghosts.iterate_all_instances():
+                        j.draw(screen, apple_counter)
+                    for j in Apple.iterate_all_instances():
+                        j.draw(screen)
+
+                    pygame.display.flip()
+
+        pygame.display.flip()
+        dt = clock.tick(60) / 1000.0
 
 pygame.quit()
