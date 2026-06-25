@@ -51,6 +51,11 @@ def func_game_over():
     for apple in Apple.iterate_all_instances():
         apple.draw(screen)
 
+    overlay_color = (255, 255, 255, 30)
+    overlay_surface = pygame.Surface(screen.get_size(), pygame.SRCALPHA)
+    overlay_surface.fill(overlay_color)
+    screen.blit(overlay_surface, (0, 0))
+
     text_game_over_source = font_large.render(text_game_over, True, (255, 0, 0))
     screen.blit(text_game_over_source, (screen.get_width() / 2 - 200, screen.get_height() / 2 - 100))
     text_game_over_apples = "Points: " + str(apple_counter)
@@ -114,11 +119,18 @@ while running:
             point_pos.x = point_pos.x * 43
             print(point_pos.x + point_pos.y)
 
+            cellsize = 40
+            mid_x = labyrinth.room_box_cords_left_up.x + (labyrinth.cols // 2)  # width = 4
+            mid_y = labyrinth.room_box_cords_left_up.y + (labyrinth.rows // 2)  # height = 2
+
+            spawn_x = (mid_x + 0.5) * cellsize
+            spawn_y = (mid_y + 0.5) * cellsize
+
             pacman = PacMan(0, 30, screen.get_width() / 2, screen.get_height() / 2, screen.get_width(),screen.get_height(), labyrinth.walls, labyrinth.score_box_cords_left_up,labyrinth.score_box_cords_right_down)
-            Ghosts("Geist_Rot", 30, 20, 10, screen.get_width(), screen.get_height(), screen.get_width() / 2,  screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-            Ghosts("Geist_lila", 30, 20, 20, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-            Ghosts("Geist_blau", 30, 20, 30, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
-            Ghosts("Geist_Grün", 30, 20, 40, screen.get_width(), screen.get_height(), screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_Rot", 30, 20, 10, spawn_x, spawn_y, screen.get_width() / 2,  screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_lila", 30, 20, 20, spawn_x, spawn_y, screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_blau", 30, 20, 30, spawn_x, spawn_y, screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
+            Ghosts("Geist_Grün", 30, 20, 40, spawn_x, spawn_y, screen.get_width() / 2, screen.get_height() / 2, labyrinth.walls, labyrinth.score_box_cords_left_up, labyrinth.score_box_cords_right_down)
 
         screen.fill("black")
         text_source = font_normal.render(text_start_game, True, (0, 255, 0))
